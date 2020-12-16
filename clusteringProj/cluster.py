@@ -13,19 +13,82 @@ with open("GSE28_series_matrix.txt", "r") as file:
     exp = file.readlines()
     file.close()
 
+
 col_names = exp[0]
 col_names = col_names.replace("\n", "")
 col_names = col_names.replace("\"", "")
 col_names = col_names.split("\t")
+col_names = col_names[1:]
 del exp[0]
+
+print(col_names)
 
 for i in range(0,len(exp)):
     exp[i] = exp[i].replace("\n", "")
     exp[i] = exp[i].split("\t")
     del exp[i][0]
 
+
+# Lets find column averages to substitute for each empty val
+colAvs = np.zeros(len(exp[0]))
+for col in range(0, len(exp[0])):
+    colSum = 0
+    counter = 0
+    for row in range(0, len(exp)):
+        if exp[row][col] == "": continue
+        counter += 1
+        exp[row][col] = float(exp[row][col])
+        colSum += exp[row][col]
+    colAvs[col] = colSum/counter
+
+# Substituting column average for blank spaces:
+for row in range(0, len(exp)):
+    for col in range(0, len(exp[0])):
+        if exp[row][col] == "":
+            exp[row][col] = colAvs[col]
+print()
+print(colAvs)
+print(exp[0:10])
+print()
+
+col_names = np.asarray(col_names)
+exp = np.asarray(exp)
+print(exp[0:10])
+print()
+
+# switching columns to match time ordering in dataset:
+exp[:, [1,0]] = exp[:, [0,1]]
+col_names[1], col_names[0] = col_names[0], col_names[1]
+colAvs[1], colAvs[0] = colAvs[0], colAvs[1]
+
+exp[: , [2,3]] = exp[:, [3,2]]
+col_names[2], col_names[3] = col_names[3], col_names[2]
+colAvs[2], colAvs[3] = colAvs[3], colAvs[2]
+
+exp[: , [1,2]] = exp[:, [2,1]]
+col_names[1], col_names[2] = col_names[2], col_names[1]
+colAvs[1], colAvs[2] = colAvs[2], colAvs[1]
+
+exp[: , [3,4]] = exp[:, [4,3]]
+col_names[3], col_names[4] = col_names[4], col_names[3]
+colAvs[3], colAvs[4] = colAvs[4], colAvs[3]
+
+exp[: , [2,3]] = exp[:, [3,2]]
+col_names[2], col_names[3] = col_names[3], col_names[2]
+colAvs[2], colAvs[3] = colAvs[3], colAvs[2]
+
+exp[: , [4,5]] = exp[:, [5,4]]
+col_names[4], col_names[5] = col_names[5], col_names[4]
+colAvs[4], colAvs[5] = colAvs[5], colAvs[4]
+
+exp[: , [3,4]] = exp[:, [4,3]]
+col_names[3], col_names[4] = col_names[4], col_names[3]
+colAvs[3], colAvs[4] = colAvs[4], colAvs[3]
+
+print(exp[0:10])
+
 # converting data to strings and removing rows with incomplete data
-exp = [[float(string) for string in row] for row in exp if not ("" in row)]
+# exp = [[float(string) for string in row] for row in exp if not ("" in row)]
 """
 This is extra script for copying over the clean exp data:
 exp = [[string for string in row] for row in exp if not ("" in row)]
@@ -39,6 +102,16 @@ with open("cleanExpMatrix.txt", "w") as file:
         line = line + "\n"
         file.write(line)
 """
+exp = [[string for string in row] for row in exp]
+with open("cleanExpMatrix.txt", "w") as file:
+    first = "5 7\n"
+    file.write(first)
+    for row in exp:
+        line = ""
+        for point in row:
+            line = line + str(point) + " "
+        line = line + "\n"
+        file.write(line)
 
 # Creating Distance Matrix using Euclidean distance (ETHAN)
 distMat = np.zeros((len(exp), len(exp)))
