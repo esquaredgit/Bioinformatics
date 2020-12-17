@@ -8,7 +8,9 @@ Original file is located at
 """
 
 # Reference/Citation: https://machinelearningmastery.com/how-to-generate-random-numbers-in-python/
+# Reference/Citation: https://stackoverflow.com/questions/33359740/random-number-between-0-and-1-in-python
 
+import random
 from random import randint
 
 def Random(t):
@@ -16,8 +18,8 @@ def Random(t):
 
 def GetRandomKMer(dnaSeq, profile, k):
   kmersInSequence = []
-  for i in range(len(sequence)):
-    kmer = sequence[i:i+k]
+  for i in range(len(dnaSeq)):
+    kmer = dnaSeq[i:i+k]
     if len(kmer) == k:
       kmersInSequence.append(kmer)
   
@@ -34,7 +36,7 @@ def GetRandomKMer(dnaSeq, profile, k):
         row = 1
       elif letter == 'G':
         row = 2
-      elif letter = 'T':
+      elif letter == 'T':
         row = 3
       probabilityForKmer *= profile[row][i]
       i += 1
@@ -52,7 +54,7 @@ def GetRandomKMer(dnaSeq, profile, k):
     for x in range(1, len(kmerProbabilities)):
       kmerProbabilities[x] += kmerProbabilities[x-1]
 
-    rand = random()
+    rand = random.uniform(0, 1)
     
     z = 0
     for kmerProbability in kmerProbabilities:
@@ -251,10 +253,19 @@ def GibbsSampler(DNA, k, t, N):
     for n in range(len(CountMatrix)):
       for m in range(len(CountMatrix[0])):
         CountMatrix[n][m] += 1
-
+        
     Profile = calculateProfileMatrix(CountMatrix)
 
-    Motifs[i] = GetRandomKMer(Dna[i], Profile, k)
+    Motifs[i] = GetRandomKMer(DNA[i], Profile, k)
+    
     if Score(Motifs) < Score(BestMotifs):
       BestMotifs = Motifs
   return BestMotifs
+
+DNA = []
+DNA.append('CGCCCCTCTCGGGGGTGTTCAGTAAACGGCCA')
+DNA.append('GGGCGAGGTATGTGTAAGTGCCAAGGTGCCAG')
+DNA.append('TAGTACCGAGACCGAAAGAAGTATACAGGCGT')
+DNA.append('TAGATCAAGTTTCAGGTGCACGTCGGTGAACC')
+DNA.append('AATCCACCAGCTCCACGTGCAATGTTGGCCTA')
+print(GibbsSampler(DNA, 8, 5, 100))
