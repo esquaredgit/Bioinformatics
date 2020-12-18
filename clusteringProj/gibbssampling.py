@@ -59,7 +59,7 @@ def GetRandomKMer(dnaSeq, profile, k):
     z = 0
     for kmerProbability in kmerProbabilities:
       if rand < kmerProbability:
-        return kmer[z]
+        return kmersInSequence[z]
       z += 1
     return None
 
@@ -253,7 +253,7 @@ def GibbsSampler(DNA, k, t, N):
     for n in range(len(CountMatrix)):
       for m in range(len(CountMatrix[0])):
         CountMatrix[n][m] += 1
-        
+
     Profile = calculateProfileMatrix(CountMatrix)
 
     Motifs[i] = GetRandomKMer(DNA[i], Profile, k)
