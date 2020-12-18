@@ -1,4 +1,4 @@
-Pictures and figures to be used in the report. 
+Pictures and figures to be used in the report (line_Av_5Centers is the primary model to be used for the clustering portion of the report). 
 
 For the expression vectors we tested a couple of different cleaning methods:
 1. We removed a vector from the matrix entirely if it was incomplete. Items using this data are marked "Rm" for "remove."
