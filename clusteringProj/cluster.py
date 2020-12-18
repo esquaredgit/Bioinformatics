@@ -7,6 +7,12 @@ import numpy as np
 import math
 import sys
 
+from sklearn.cluster import KMeans 
+from sklearn import metrics 
+from scipy.spatial.distance import cdist 
+import numpy as np 
+import matplotlib.pyplot as plt 
+
 # Begin by cleaning up the expression data (removing any rows with missing values):
 
 with open("GSE28_series_matrix.txt", "r") as file:
@@ -47,9 +53,11 @@ for row in range(0, len(exp)):
         if exp[row][col] == "":
             exp[row][col] = colAvs[col]
 print()
-print(colAvs)
-print(exp[0:10])
+print("Averages: " + str(colAvs))
 print()
+print("First ten:" + str(exp[0:10]))
+print()
+
 
 col_names = np.asarray(col_names)
 exp = np.asarray(exp)
@@ -85,14 +93,17 @@ exp[: , [3,4]] = exp[:, [4,3]]
 col_names[3], col_names[4] = col_names[4], col_names[3]
 colAvs[3], colAvs[4] = colAvs[4], colAvs[3]
 
+print(col_names)
 print(exp[0:10])
+
 
 # converting data to strings and removing rows with incomplete data
 # exp = [[float(string) for string in row] for row in exp if not ("" in row)]
+
+# This is extra script for copying over the clean exp data:
 """
-This is extra script for copying over the clean exp data:
 exp = [[string for string in row] for row in exp if not ("" in row)]
-with open("cleanExpMatrix.txt", "w") as file:
+with open("cleanExpMatrixRm.txt", "w") as file:
     first = "4 7\n"
     file.write(first)
     for row in exp:
@@ -101,9 +112,10 @@ with open("cleanExpMatrix.txt", "w") as file:
             line = line + str(point) + " "
         line = line + "\n"
         file.write(line)
-"""
+
+
 exp = [[string for string in row] for row in exp]
-with open("cleanExpMatrix.txt", "w") as file:
+with open("cleanExpMatrixAv.txt", "w") as file:
     first = "5 7\n"
     file.write(first)
     for row in exp:
@@ -112,6 +124,7 @@ with open("cleanExpMatrix.txt", "w") as file:
             line = line + str(point) + " "
         line = line + "\n"
         file.write(line)
+"""
 
 # Creating Distance Matrix using Euclidean distance (ETHAN)
 distMat = np.zeros((len(exp), len(exp)))
@@ -134,9 +147,6 @@ for row in range(0, len(distMat)):
             distMat[row][col] = distMat[col][row]
             continued = True
             continue
-        if (row > col) or (row == col) and (continued == True): 
-            print("WTFFF")
-            sys.exit()
         continued = False
         zipped = list(zip(exp[row], exp[col]))
         under = sum([(t[1]-t[0])**2 for t in zipped])
@@ -148,17 +158,50 @@ for row in range(0, len(distMat)):
 print(distMat)
 
 # Running hClustering (ETHAN)
-
-
 # Creating Dendrogram visualization (ETHAN)
 info = linkage(distMat, "average")
-figure = plot.figure(figsize=(25, 10))
-graph = dendrogram(info)
+figure = plot.figure()
+graph = dendrogram(info, truncate_mode="lastp")
 plot.show()
 print(str(set(graph["color_list"])))
 
-# Running Lloyd algorithm on Distance Matrix using k (maybe k = 4) from hierarchical clustering (NICK)
-K = len(set(graph["color_list"]))
+# Running Lloyd algorithm on Distance Matrix using k (maybe k = 4) from hierarchical clustering (ETHAN)
+distortions = [] 
+inertias = [] 
+mapping1 = {} 
+mapping2 = {} 
+K = range(1,10) 
+  
+for k in K: 
+    #Building and fitting the model 
+    kmeanModel = KMeans(n_clusters=k).fit(distMat) 
+    kmeanModel.fit(distMat)     
+      
+    distortions.append(sum(np.min(cdist(distMat, kmeanModel.cluster_centers_, 
+                      'euclidean'),axis=1)) / distMat.shape[0]) 
+    inertias.append(kmeanModel.inertia_) 
+  
+    mapping1[k] = sum(np.min(cdist(distMat, kmeanModel.cluster_centers_, 
+                 'euclidean'),axis=1)) / distMat.shape[0] 
+    mapping2[k] = kmeanModel.inertia_ 
+
+for key,val in mapping1.items(): 
+    print(str(key)+' : '+str(val)) 
+
+plt.plot(K, distortions, 'bx-') 
+plt.xlabel('Values of K') 
+plt.ylabel('Distortion') 
+plt.title('The Elbow Method using Distortion') 
+plt.show() 
+
+for key,val in mapping2.items(): 
+    print(str(key)+' : '+str(val)) 
+
+plt.plot(K, inertias, 'bx-') 
+plt.xlabel('Values of K') 
+plt.ylabel('Inertia') 
+plt.title('The Elbow Method using Inertia') 
+plt.show() 
 
 # Visualizing each cluster (line of best fit for each cluster AND all vectors in each cluster) (NICK)
 
