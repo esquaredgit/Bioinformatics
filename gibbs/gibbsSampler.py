@@ -57,6 +57,7 @@ def GetRandomKMer(dnaSeq, profile, k):
       z += 1
     return None
 
+
 def buildConsensusString(Motifs):
   consensusString = ""
 
@@ -90,6 +91,40 @@ def buildConsensusString(Motifs):
     consensusString += mostFreqLetterInCurrentCol
 
   return consensusString
+
+"""
+def buildConsensusString(Motifs):
+  consensusString = ""
+
+  countMap = {}
+  for i in range(len(Motifs[0])):
+    countMap[i] = [0, 0, 0, 0]
+
+  for motif in Motifs:
+    for letterPos in range(len(Motifs[0])):
+        if motif[letterPos] == 'A':
+          countMap[letterPos][0] += 1
+        if motif[letterPos] == 'T':
+          countMap[letterPos][1] += 1
+        if motif[letterPos] == 'C':
+          countMap[letterPos][2] += 1
+        if motif[letterPos] == 'G':
+          countMap[letterPos][3] += 1
+
+  for pos in countMap.values():
+    letter = pos.index(max(pos))
+    
+    if letter == 0:
+      consensusString += 'A'
+    if letter == 1:
+      consensusString += 'T'
+    if letter == 2:
+      consensusString += 'C'
+    if letter == 3:
+      consensusString += 'G'
+
+  return consensusString
+"""
 
 """
 Motifs = []
@@ -296,7 +331,7 @@ def parseSequence(seq, start, end):
     start -= 1
     end -= 1
     
-    k = 500 #3
+    k = 500
     
     if start < end:
         firstPart = seq[0:start]
@@ -311,7 +346,7 @@ def parseSequence(seq, start, end):
 
     return result
 
-# parseSequence("ACTCGGCCGTACA", 9, 5) # reverse complement of CAT
+parseSequence("ACTCGGCCGTACA", 9, 5) # reverse complement of CAT
 
 def generateDNA(filename):
     result = []
@@ -366,6 +401,10 @@ DNA1 = generateDNA("dna1.txt")
 DNA2 = generateDNA("dna2.txt")
 DNA3 = generateDNA("dna3.txt")
 
-print(GibbsSampler(DNA1, 16, 1737, 100))
-print(GibbsSampler(DNA2, 16, 462, 100))
-print(GibbsSampler(DNA3, 16, 936, 100))
+#print(GibbsSampler(DNA1, 16, 1737, 100))
+#print(GibbsSampler(DNA2, 16, 462, 100))
+#print(GibbsSampler(DNA3, 16, 936, 100))
+
+print(buildConsensusString(GibbsSampler(DNA1, 16, 1737, 100)))
+print(buildConsensusString(GibbsSampler(DNA2, 16, 462, 100)))
+print(buildConsensusString(GibbsSampler(DNA3, 16, 936, 100)))
