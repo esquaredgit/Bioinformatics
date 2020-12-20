@@ -401,9 +401,9 @@ DNA1 = generateDNA("dna1.txt")
 DNA2 = generateDNA("dna2.txt")
 DNA3 = generateDNA("dna3.txt")
 
-#print(GibbsSampler(DNA1, 16, 1737, 100))
-#print(GibbsSampler(DNA2, 16, 462, 100))
-#print(GibbsSampler(DNA3, 16, 936, 100))
+print(GibbsSampler(DNA1, 16, 1737, 100))
+print(GibbsSampler(DNA2, 16, 462, 100))
+print(GibbsSampler(DNA3, 16, 936, 100))
 
 print(buildConsensusString(GibbsSampler(DNA1, 16, 1737, 100)))
 print(buildConsensusString(GibbsSampler(DNA2, 16, 462, 100)))
