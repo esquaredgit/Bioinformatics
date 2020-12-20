@@ -1,10 +1,12 @@
-# Ethan Eldridge
+# CSCI-B363 Final Project: Topic 2.1; Ethan Eldridge, Nick Frasco, Matt Kunin
+# Data taken from DiRisi and colleagues: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE28
+
 import math
 import random
 import matplotlib.pyplot as plt
 import sys
 
-# Formatting 
+# Formatting Data
 with open("cleanExpMatrixAv.txt", "r") as file:
     data = file.readlines()
 
@@ -28,6 +30,8 @@ print()
 
 
 count = 0
+
+# Running Lloyd algorithm on Distance Matrix using k from hierarchical clustering (ETHAN)
 
 def lloyd(data, k, m):
     centers = data[0:k]
@@ -70,18 +74,19 @@ rawClus = output[1]
 
 
 
-"""
-STILL NEED TO SORT OUT THE INDEXING STUFF BUT OTHER THAN THAT IT'S PRETTY MUCH GOOD
-"""
 
 cens = [c[1] for c in rawCens]
 print(cens)
 for c in rawClus:
     print(c[0][1])
 
+# Creating line graph for cluster centers 
+
 for p in range(0, len(cens)):
-    plt.plot([i for i in range(1, 8)], cens[p], label="Cluster " + str(p+1))
+    plt.plot([0, 9.5, 11.5, 13.5, 15.5, 18.5, 20.5], cens[p], label="Cluster " + str(p+1))
 plt.yticks([-2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3])
+plt.ylabel("Gene Expression Level")
+plt.xlabel("Diauxic Shift Timecourse label (hr)")
 plt.legend(loc="lower left")
 plt.show()
 
