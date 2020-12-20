@@ -1,1 +1,3 @@
-This contains all of the code for the hierarchichal and k-means clustering. cluster.py is the primary file for the hierarchical clustering visualization and elbow method. lloydMod.py is the primary file for the k-means clustering algorithm and visualization.
+This contains all of the code for the hierarchichal and k-means clustering. 
+cluster.py is the primary file for the hierarchical clustering visualization and elbow method. 
+lloydMod.py is the primary file for the k-means clustering algorithm and visualization.
