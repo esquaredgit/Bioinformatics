@@ -82,13 +82,13 @@ for c in rawClus:
 
 # Creating line graph for cluster centers 
 
-for p in range(0, len(cens)):
-    plt.plot([0, 9.5, 11.5, 13.5, 15.5, 18.5, 20.5], cens[p], label="Cluster " + str(p+1))
-plt.yticks([-2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3])
-plt.ylabel("Gene Expression Level")
-plt.xlabel("Diauxic Shift Timecourse label (hr)")
-plt.legend(loc="lower left")
-plt.show()
+# for p in range(0, len(cens)):
+#     plt.plot([0, 9.5, 11.5, 13.5, 15.5, 18.5, 20.5], cens[p], label="Cluster " + str(p+1))
+# plt.yticks([-2.5, -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3])
+# plt.ylabel("Gene Expression Level")
+# plt.xlabel("Diauxic Shift Timecourse label (hr)")
+# plt.legend(loc="lower left")
+# plt.show()
 
 # print("Centers: " + str(cens))
 # print()
@@ -98,39 +98,49 @@ clus = [[p[1] for p in c] for c in rawClus]
 
 print("# of clusters: " + str(len(clus)))
 
-# for p in range(0, 270):
-#     plt.plot([i for i in range(1, 8)], clus[0][p])
-# plt.show()
+# Plotting the actual clusters (not just the centers)
 
-# for p in clus[1]:
-#     plt.plot([i for i in range(1, 8)], p)
-# plt.show()
+fig, axs = plt.subplots(nrows=2, ncols=3)
+fig.suptitle('Expression graphs by cluster')
+for p in clus[0]:
+    axs[0, 0].plot([0, 9.5, 11.5, 13.5, 15.5, 18.5, 20.5], p)
+    axs[0, 0].set_title("Cluster 1")
+for p in clus[1]:
+    axs[0, 1].plot([0, 9.5, 11.5, 13.5, 15.5, 18.5, 20.5], p)
+    axs[0, 1].set_title("Cluster 2")
+for p in clus[2]:
+    axs[0, 2].plot([0, 9.5, 11.5, 13.5, 15.5, 18.5, 20.5], p)
+    axs[0, 2].set_title("Cluster 3")
+for p in clus[3]:
+    axs[1, 0].plot([0, 9.5, 11.5, 13.5, 15.5, 18.5, 20.5], p)
+    axs[1, 0].set_title("Cluster 4")
+for p in clus[4]:
+    axs[1, 1].plot([0, 9.5, 11.5, 13.5, 15.5, 18.5, 20.5], p)
+    axs[1, 1].set_title("Cluster 5")
 
-# for p in clus[2]:
-#     plt.plot([i for i in range(1, 8)], p)
-# plt.show()
+for ax in axs.flat:
+    ax.set(xlabel='Diauxic Shift Timecourse label (hr)', ylabel='Gene Expression Level')
 
+# Hide x labels and tick labels for top plots and y ticks for right plots.
+for ax in axs.flat:
+    ax.label_outer()
 
-with open("clusterAnswers.txt", "w") as file:
-    # Need indexes for clusters 2, 3, 5
-    file.write("k " + str(len(clus[1])) + " 100\n")
-    for i in range(0, len(rawClus[1])):
-        file.write(str(rawClus[1][i][0])+"\n")
+plt.show()
 
-    file.write("k " + str(len(clus[2])) + " 100\n")
-    for i in range(0, len(rawClus[2])):
-        file.write(str(rawClus[2][i][0])+"\n")
+"""
+Compiling the necessary data for the Gibbs Sampling portion of the assignment:
+"""
 
-    file.write("k " + str(len(clus[4])) + " 100\n")
-    for i in range(0, len(rawClus[4])):
-        file.write(str(rawClus[4][i][0])+"\n")
+# with open("clusterAnswers.txt", "w") as file:
+#     # Need indexes for clusters 2, 3, 5
+#     file.write("k " + str(len(clus[1])) + " 100\n")
+#     for i in range(0, len(rawClus[1])):
+#         file.write(str(rawClus[1][i][0])+"\n")
 
-# with open("answer.txt", "w") as file:
-#     for p in lloyd(data, K, M):
-#         line = ""
-#         for i in range(0, len(p)):
-#             if i == len(p)-1: 
-#                 line += str(round(p[i],3))
-#                 continue
-#             line += str(round(p[i],3)) + " "
-#         file.write(line + "\n")
+#     file.write("k " + str(len(clus[2])) + " 100\n")
+#     for i in range(0, len(rawClus[2])):
+#         file.write(str(rawClus[2][i][0])+"\n")
+
+#     file.write("k " + str(len(clus[4])) + " 100\n")
+#     for i in range(0, len(rawClus[4])):
+#         file.write(str(rawClus[4][i][0])+"\n")
